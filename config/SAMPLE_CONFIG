@@ -1,0 +1,6 @@
+debug: true
+port: 8081
+stage: DEVO
+logConfig:
+  logLevel: DEBUG
+  logtimeFormat: yyyy-MM-dd HH:mm:ss
