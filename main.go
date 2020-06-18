@@ -7,6 +7,11 @@ import (
     "strings"
 
     "obh-crud/config"
+
+    //echo
+    "net/http"
+    "github.com/labstack/echo/v4"
+    "github.com/labstack/echo/v4/middleware"
 )
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,11 +28,14 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
     port := ":8081"
     fmt.Println("Starting webservice on port {}....", port)
-    http.HandleFunc("/", rootHandler)
+    //http.HandleFunc("/", rootHandler)
     //http.ListenAndServe(port, nil)
     //log.Fatal(http.ListenAndServe(":8081", nil))
 
     config := config.LoadConfig() 
     print(config)
     print("hello world")
+
+    // Echo instance
+    e := echo.New()
 }
