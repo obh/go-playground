@@ -2,7 +2,8 @@ package repo
 
 import (
     "context"
-    "obh-crud/domains"
+    "github.com/obh/go-playground/domains"
+
 )
 
 type Auth interface {

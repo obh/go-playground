@@ -2,7 +2,7 @@ package repoimpl
 
 import (
     "context"
-    "obh-crud/domains"
+    "github.com/obh/go-playground/domains"
 )
 
 // Repoimpl does the implemenation for an external service/db call

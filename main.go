@@ -6,7 +6,10 @@ import (
     "net/http"
     "strings"
 
-    "obh-crud/config"
+    "github.com/obh/go-playground/config"
+    "github.com/obh/go-playground/repoimpl"
+    "github.com/obh/go-playground/serviceimpl"
+    "github.com/obh/go-playground/delivery"
 
     //echo
     "net/http"
@@ -38,4 +41,13 @@ func main() {
 
     // Echo instance
     e := echo.New()
+    client := repoimpl.Client()
+
+    // create repo implementation here
+    authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost"} 
+    // inject the rep to service
+    authSvc := &serviceimpl.Auth{AuthRepo: authRepo}.
+
+    // call service
+    delivery.configureAuthHandler(e, authSvc)
 }

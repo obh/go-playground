@@ -3,7 +3,7 @@ package service
 import (
     "context"
     "net/http"
-    "obh-crud/domains"
+    "github.com/obh/go-playground/domains"
 
 )
 

@@ -3,7 +3,7 @@ package delivery
 import (
     "fmt"
     
-    "obh_crud/domains"
+    "github.com/obh/go-playground/domains"
 )
 
 func ConfigureAuthHandler(e *echo.Echo, svc service.Auth) {
