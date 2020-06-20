@@ -47,6 +47,9 @@ func main() {
     // inject the rep to service
     authSvc := &serviceimpl.Auth{AuthRepo: authRepo}
 
-    // call service
+    // configure service
     delivery.ConfigureAuthHandler(e, authSvc)
+   
+    e.Logger.Fatal(e.Start(":1323"))
+
 }
