@@ -12,9 +12,8 @@ import (
     "github.com/obh/go-playground/delivery"
 
     //echo
-    "net/http"
     "github.com/labstack/echo/v4"
-    "github.com/labstack/echo/v4/middleware"
+    //"github.com/labstack/echo/v4/middleware"
 )
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,13 +40,13 @@ func main() {
 
     // Echo instance
     e := echo.New()
-    client := repoimpl.Client()
+    client := repoimpl.Init()
 
     // create repo implementation here
     authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost"} 
     // inject the rep to service
-    authSvc := &serviceimpl.Auth{AuthRepo: authRepo}.
+    authSvc := &serviceimpl.Auth{AuthRepo: authRepo}
 
     // call service
-    delivery.configureAuthHandler(e, authSvc)
+    delivery.ConfigureAuthHandler(e, authSvc)
 }

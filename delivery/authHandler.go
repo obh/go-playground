@@ -2,6 +2,7 @@ package delivery
 
 import (
     "fmt"
+    "net/http"
     "github.com/labstack/echo"
     
     "github.com/obh/go-playground/service"
@@ -22,7 +23,8 @@ type authHandler struct {
     authSvc service.Auth
 }
 
-func (h * authHandler) authorize(c echo.Context) {
+func (h * authHandler) authorize(c echo.Context) error {
    fmt.Printf("in authorize handler") 
+   return c.String(http.StatusOK, "Hello, World!")
 }
 
