@@ -1,2 +1,5 @@
+export CONFIG=/Users/rohit/go/src/obh-crud/config/SAMPLE_CONFIG
+
+## dependencies
 go get github.com/labstack/echo/v4
 
