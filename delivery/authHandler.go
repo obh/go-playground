@@ -2,13 +2,15 @@ package delivery
 
 import (
     "fmt"
+    "github.com/labstack/echo"
     
-    "github.com/obh/go-playground/domains"
+    "github.com/obh/go-playground/service"
+    //"github.com/obh/go-playground/domains"
 )
 
 func ConfigureAuthHandler(e *echo.Echo, svc service.Auth) {
     fmt.Printf("in ConigureAuthHandler")
-    authHandler := &authHandler{authSvc: s}
+    authHandler := &authHandler{authSvc: svc}
     addAuthHandler(e, authHandler)
 }
 

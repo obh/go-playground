@@ -13,10 +13,14 @@ type Auth struct {
     AuthRepo repo.Auth
 }
 
-func (a *Auth) Authorize(c context.Context, req *domains.AuthRequest, httpReq *http.Request) (resp *domains.Response, error) {
+func (a *Auth) Authorize(c context.Context, req *domains.AuthorizeHttpRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
     fmt.Printf("Calling authorize service implementation ")
+    ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK", }
+    return ar, nil
 }
 
-func (a *Auth) Verify(c context.Context) (resp *domains.Response, error) {
+func (a *Auth) Verify(c context.Context) (*domains.AuthorizeResponse, error) {
     fmt.Printf("calling verify service implementation")
+    ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK",}
+    return ar, nil
 }

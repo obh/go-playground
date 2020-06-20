@@ -7,5 +7,5 @@ import (
 )
 
 type Auth interface {
-    Authorize(context.Context, *domains.AuthorizeRequest) *(domains.AuthorizeIntResp, error)
+    Authorize(context.Context, *domains.AuthorizeRequest) (*domains.AuthorizeIntResponse, error)
 }
