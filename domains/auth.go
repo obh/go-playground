@@ -3,8 +3,8 @@ package domains
 
 // This is request for authorize internal service
 type AuthorizeRequest struct {
-    Username string
-    Password string
+    Username string     `json:"username"`
+    Password string     `json:"password"`
 
 }
 

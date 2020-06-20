@@ -6,7 +6,7 @@ import (
     "github.com/labstack/echo/v4"
     
     "github.com/obh/go-playground/service"
-    //"github.com/obh/go-playground/domains"
+    "github.com/obh/go-playground/domains"
 )
 
 func ConfigureAuthHandler(e *echo.Echo, svc service.Auth) {
@@ -16,15 +16,25 @@ func ConfigureAuthHandler(e *echo.Echo, svc service.Auth) {
 }
 
 func addAuthHandler(e *echo.Echo, handler *authHandler){
-    e.GET("/auth", handler.authorize)
+    e.POST("/auth", handler.authorize)
 }
 
 type authHandler struct {
     authSvc service.Auth
 }
 
-func (h * authHandler) authorize(c echo.Context) error {
-   fmt.Printf("in authorize handler") 
-   return c.String(http.StatusOK, "Hello, World!")
+func (h *authHandler) authorize(c echo.Context) error {
+   ar := new(domains.AuthorizeRequest)
+   if err := c.Bind(ar); err != nil {
+        return c.String(http.StatusBadRequest, "Bad Request")
+   }
+   fmt.Printf(ar.Username)
+   fmt.Printf("in authorize handler\n") 
+
+   resp, err := h.authSvc.Authorize(c.Request().Context(), ar, c.Request())
+   if err != nil {
+        fmt.Printf("response from authorize service\n")
+   }
+   return c.JSON(http.StatusOK, resp)
 }
 

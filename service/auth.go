@@ -9,6 +9,6 @@ import (
 
 // This is the service layer 
 type Auth interface {
-    Authorize(context.Context, *domains.AuthorizeHttpRequest, *http.Request) (*domains.AuthorizeResponse, error)
+    Authorize(context.Context, *domains.AuthorizeRequest, *http.Request) (*domains.AuthorizeResponse, error)
     Verify(context.Context) (*domains.AuthorizeResponse, error)
 }

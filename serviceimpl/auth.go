@@ -13,8 +13,8 @@ type Auth struct {
     AuthRepo repo.Auth
 }
 
-func (a *Auth) Authorize(c context.Context, req *domains.AuthorizeHttpRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
-    fmt.Printf("Calling authorize service implementation ")
+func (a *Auth) Authorize(c context.Context, req *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
+    fmt.Printf("Calling authorize service implementation\n")
     ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK", }
     return ar, nil
 }
