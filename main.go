@@ -46,7 +46,6 @@ func main() {
     authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost"} 
     // inject the rep to service
     authSvc := &serviceimpl.Auth{AuthRepo: authRepo}
-
     // configure service
     delivery.ConfigureAuthHandler(e, authSvc)
    

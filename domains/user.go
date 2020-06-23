@@ -1,8 +1,15 @@
 package domains
 
-type AuthKeys struct {
-    appId       string
-    secretKey   string
+type UserAuthRequest struct {
+    username       string
+    password       string
+}
+
+
+type UserAuthResponse struct {
+    username    string
+    status      int
+    token       string
 }
 
 
