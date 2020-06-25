@@ -12,4 +12,9 @@ type UserAuthResponse struct {
     token       string
 }
 
+type UserCreateRequest struct {
+    email       string
+    phone       string
+    password    string
+}
 

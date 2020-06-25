@@ -40,8 +40,18 @@ func main() {
 
     // Echo instance
     e := echo.New()
+
+    // client for Repo
     client := repoimpl.Init()
 
+    // db client
+    mysqlClient, err:= repoimpl.InitDb(config.DbConfig)
+
+    if err != nil {
+        fmt.Println("MySql connection failed ", err)
+        fmt.Println("works ", mysqlClient)
+    }
+    
     // create repo implementation here
     authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost"} 
     // inject the rep to service

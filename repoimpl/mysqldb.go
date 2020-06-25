@@ -3,7 +3,11 @@ package repoimpl
 import (
 	"database/sql"
 	"fmt"
+    "log"
+    "net/url"
 	_ "github.com/go-sql-driver/mysql"
+
+    "github.com/obh/go-playground/config"
 )
 
 type MySqlClient struct {
@@ -14,8 +18,9 @@ const (
     getUserByEmail          string = `select * from Users where email = ?`
 )
 
-func Init(cfg config.DBConfig) (*MySqlClient, error) {
-    connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", cfg.User, cfg.Pass, cfg.Host, cfg.Port, cfg.Name)
+func InitDb(cfg config.DbConfig) (*MySqlClient, error) {
+    fmt.Println(" Connecting to mysql", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
+    connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
 	val := url.Values{}
 	val.Add("charset", "utf8")
 	val.Add("parseTime", "True")
@@ -27,12 +32,15 @@ func Init(cfg config.DBConfig) (*MySqlClient, error) {
 	}
 	err = dbConn.Ping()
 	if err != nil {
+        log.Println("Error in mysql connection", err)
 		return nil, err
 	}
 	dbConn.SetMaxOpenConns(cfg.MaxConnections)
-	return dbConn, nil
+    return &MySqlClient{dbConn}, nil
+	//return dbConn, nil
 }
 
+/*
 func (sql *MySqlClient) GetUserByEmail(ctx context.Context, email string) ([]domains.UserDetails, error) {
     userRows, err := sql.Conn.QueryContext(ctx, getUserByEmail, email)
     if err != nil {
@@ -56,3 +64,4 @@ func (sql *MySqlClient) GetUserByEmail(ctx context.Context, email string) ([]dom
     }
     return userDetailRows, nil
 }
+*/

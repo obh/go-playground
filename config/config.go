@@ -11,12 +11,22 @@ type Config struct {
     Debug       bool        `yaml:"debug"`
     Port        int         `yaml:"port"`
     Stage       string      `yaml:"stage"`
-    LogConfig   LogConfig   `yaml:"logConfig"`
+    LogConfig   LogConfig   `yaml:"logconfig"`
+    DbConfig    DbConfig    `yaml:"dbconfig"`
 }
 
 type LogConfig struct {
     LogLevel        string      `yaml:"logLevel"`
     LogTimeFormat   string      `yaml:"logtimeformat"`
+}
+
+type DbConfig struct {
+    Username        string      `yaml:"username"`
+    Password        string      `yaml:"password"`
+    Host            string      `yaml:"host"`
+    Port            string      `yaml:"port"`
+    Name            string      `yaml:"name"`
+    MaxConnections  int         `yaml:"maxConnections"`
 }
 
 func LoadConfig() *Config {
@@ -43,13 +53,20 @@ func LoadConfig() *Config {
     for key, value := range items {
         log.Print("Key: ", key)
         log.Println(" Value ", value)
-        //eachElementMap := value.(map[string]interface{})
-        //for innerKey, innerVal := range eachElementMap {
-        //    log.Print("innerKey: ", innerKey)
-        //    log.Println(" innerVal: ", innerVal)
+        //if key == "dbconfig" {
+        //   LoadDbConfig(config, value.(map[string]interface{})) 
         //}
     }
+    log.Println(config)
     return config
+}
+
+func LoadDbConfig(cfg *Config, val map[string]interface{}) {
+    //dbConf := &DbConfig{}
+    for k, v := range val {
+        log.Print(k)
+        log.Print(v)
+    }
 }
 
 

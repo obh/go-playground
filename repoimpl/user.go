@@ -9,6 +9,7 @@ type User struct {
     UserSvcBase string
 }
 
-func (a* User) UserCreate(ctx context.Context, req *domains.UserCreateIntRequest) (*domains.UserCreateIntResponse, error) {
-    fmt.Printf("in repoimpl UserCreate")
-}
+//func (a* User) UserCreate(ctx context.Context, req *domains.UserCreateIntRequest) (*domains.UserCreateIntResponse, error) {
+//    fmt.Printf("in repoimpl UserCreate")
+    
+//}

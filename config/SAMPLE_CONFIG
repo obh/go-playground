@@ -1,6 +1,14 @@
 debug: true
 port: 8081
 stage: DEVO
-logConfig:
+logconfig:
   logLevel: DEBUG
   logtimeFormat: yyyy-MM-dd HH:mm:ss
+
+dbconfig:
+  username: root
+  password: iiit1234
+  host: 127.0.0.1
+  port: 3306
+  name: cfsellers
+  maxConnections: 10
