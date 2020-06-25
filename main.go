@@ -49,15 +49,17 @@ func main() {
 
     if err != nil {
         fmt.Println("MySql connection failed ", err)
-        fmt.Println("works ", mysqlClient)
     }
     
-    // create repo implementation here
+    // Auth service goes here. Start with repo implementation here
     authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost"} 
     // inject the rep to service
     authSvc := &serviceimpl.Auth{AuthRepo: authRepo}
     // configure service
     delivery.ConfigureAuthHandler(e, authSvc)
+
+
+   // User service goes here 
    
     e.Logger.Fatal(e.Start(":1323"))
 
