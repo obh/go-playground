@@ -6,5 +6,5 @@ import (
 )
 
 type User interface {
-    UserCreate(context.Context, *domains.UserCreateIntRequest) (*domains.UserCreateIntResponse, error)
+    GetUserByEmail(context.Context, string) (*domains.User, error)
 }

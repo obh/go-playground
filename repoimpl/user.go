@@ -1,15 +1,21 @@
 package repoimpl
 
 import (
-    
+    "log"
+    "github.com/obh/go-playground/domains"   
 )
 
-type User struct {
-    Client *Client
+type UserSql struct {
+    conn *MySqlClient
     UserSvcBase string
 }
 
-//func (a* User) UserCreate(ctx context.Context, req *domains.UserCreateIntRequest) (*domains.UserCreateIntResponse, error) {
+const (
+    getUserByEmail    =   "select * from Users where email = ?";
+
+func (u* UserSql) GetUserByEmail(ctx context.Context, email string) (*domains.User, error) {
+
+    u.conn.QueryContext(ctx, getUserByEmail, email)
 //    fmt.Printf("in repoimpl UserCreate")
     
 //}
