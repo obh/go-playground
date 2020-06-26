@@ -45,7 +45,7 @@ func main() {
     client := repoimpl.Init()
 
     // db client
-    mysqlClient, err:= repoimpl.InitDb(config.DbConfig)
+    mysqlClient, err := repoimpl.InitDb(config.DbConfig)
 
     if err != nil {
         fmt.Println("MySql connection failed ", err)
@@ -60,6 +60,10 @@ func main() {
 
 
    // User service goes here 
+   userRepo := &repoimpl.UserSql{MySqlClient: mysqlClient}
+   if userRepo != nil {
+        fmt.Println("Got user Repo")
+   }
    
     e.Logger.Fatal(e.Start(":1323"))
 
