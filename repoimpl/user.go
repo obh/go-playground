@@ -15,7 +15,17 @@ const (
 
 func (u* UserSql) GetUserByEmail(ctx context.Context, email string) (*domains.User, error) {
 
-    u.conn.QueryContext(ctx, getUserByEmail, email)
+    userRows, err := u.conn.QueryContext(ctx, getUserByEmail, email)
+    if err != nil {
+        log.Println("User Query failed ", err)
+        return nil, err
+    }
+
+    if userRows != nil {
+        defer userRows.close()
+    }
+
+    user := &domains.User{}
 //    fmt.Printf("in repoimpl UserCreate")
     
 //}

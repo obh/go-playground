@@ -40,6 +40,21 @@ func InitDb(cfg config.DbConfig) (*MySqlClient, error) {
 	//return dbConn, nil
 }
 
+func StructScan(rows *sql.Rows, model interface{}) error {
+    v := reflect.ValueOf(model)
+    if v.kind() != reflect.Ptr {
+        return errors.New("must pass a pointer, not a value, to StructScan destination")
+    }
+
+    v := reflectIndirect(v)
+    t := v.Type()
+
+    cols, _ = rows.Columns()
+    var m map[string]interface{}
+    for rows.Next() {
+
+}
+
 /*
 func (sql *MySqlClient) GetUserByEmail(ctx context.Context, email string) ([]domains.UserDetails, error) {
     userRows, err := sql.Conn.QueryContext(ctx, getUserByEmail, email)
