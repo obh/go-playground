@@ -12,7 +12,7 @@ type User struct {
     UserRepo    repo.User
 }
 
-func (u* User) GetUserByEmail(ctx context.Context, req string, httpReq *http.Request) (*domains.CrudResponse, error) {
+func (u* User) GetUserByEmail(ctx context.Context, email string, httpReq *http.Request) (*domains.CrudResponse, error) {
     log.Println("in serviceimpl of Get User")
     return nil, nil
 }

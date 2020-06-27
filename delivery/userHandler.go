@@ -5,7 +5,7 @@ import (
     "net/http"
     "github.com/labstack/echo/v4"
     "github.com/obh/go-playground/service"
-    //"github.com/obh/go-playground/domains"
+    "github.com/obh/go-playground/domains"
 )
 
 func ConfigureUserHandler(e *echo.Echo, userSvc service.User) {
@@ -23,14 +23,14 @@ type userHandler struct {
 }
 
 func (h *userHandler) findByEmail(c echo.Context) error {
-    var ar string
+    ar := new(domains.UserRequest)
     if err := c.Bind(ar); err != nil {
         return c.String(http.StatusBadRequest, "Bad Request")
     }
     log.Println(ar)
     log.Println("userHandler: in FindByEmail")
 
-    resp, err := h.userSvc.GetUserByEmail(c.Request().Context(), ar, c.Request())
+    resp, err := h.userSvc.GetUserByEmail(c.Request().Context(), ar.Email, c.Request())
     if err != nil {
         log.Println("userHandler: Got error in searching for user by email", err)
     }
