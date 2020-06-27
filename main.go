@@ -60,7 +60,10 @@ func main() {
 
 
    // User service goes here 
-   userRepo := &repoimpl.UserSql{MySqlClient: mysqlClient}
+   userRepo := &repoimpl.User{Conn: mysqlClient,}
+   userSvc := &serviceimpl.User{UserRepo: userRepo}
+   delivery.ConfigureUserHandler(e, userSvc)
+
    if userRepo != nil {
         fmt.Println("Got user Repo")
    }
