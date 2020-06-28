@@ -5,6 +5,7 @@ import (
     "net/http"
     "context"
     "regexp"
+    "strings"
     "github.com/obh/go-playground/domains"
     "github.com/obh/go-playground/repo"
 )
@@ -25,10 +26,10 @@ func (u *User) CreateUser(ctx context.Context, req *domains.CreateUserRequest, h
    // validations should already be done 
 
    // find if we have any duplicates
-   _, err := u.UserRepo.GetUserByEmail(ctx, req.Email)
-   if err != nil {
+   existingUser, err := u.UserRepo.GetUserByEmail(ctx, strings.TrimSpace(req.Email) )
+   if existingUser != nil && existingUser.Id > 0 {
         log.Println("Duplicate email found")
-        return nil, err
+        return &domains.CrudResponse{Status: "OK", Code: 401, Message: "Email already exists"}, nil
    }
    user, err := u.UserRepo.CreateNewUser(ctx, req)
    if err != nil {

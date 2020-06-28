@@ -15,7 +15,7 @@ import (
 func StructScan(rows *sql.Rows, model interface{}) error {
     v := reflect.ValueOf(model)
     if v.Kind() != reflect.Ptr {
-        return errors.New("must pass a pointer, not a value, to StructScan destination")
+        return errors.New("Must pass a pointer, not a value, to StructScan destination")
     }
 
     v = reflect.Indirect(v)
@@ -42,26 +42,29 @@ func StructScan(rows *sql.Rows, model interface{}) error {
 
     for i := 0; i < v.NumField(); i++ {
         field := strings.Split(t.Field(i).Tag.Get("json"), ",")[0]
-        
         if item, ok := m[field]; ok {
 			if v.Field(i).CanSet() {
 				if item != nil {
-					switch v.Field(i).Kind() {
-					case reflect.String:
-						v.Field(i).SetString(i2s(item))
-					case reflect.Float32, reflect.Float64:
-						v.Field(i).SetFloat(item.(float64))
-					case reflect.Ptr:
-						if reflect.ValueOf(item).Kind() == reflect.Bool {
-							itemBool := item.(bool)
-							v.Field(i).Set(reflect.ValueOf(&itemBool))
-						}
-					case reflect.Struct:
-						v.Field(i).Set(reflect.ValueOf(item))
-					default:
-						fmt.Println(t.Field(i).Name, ": ", v.Field(i).Kind(), " - > - ", reflect.ValueOf(item).Kind()) // @todo remove after test out the Get methods
-					}
-				}
+                    switch v.Field(i).Kind() {
+                        case reflect.String:
+                            v.Field(i).SetString(i2s(item))
+                        case reflect.Float32, reflect.Float64:
+                            v.Field(i).SetFloat(item.(float64))
+                        case reflect.Ptr:
+                            if reflect.ValueOf(item).Kind() == reflect.Bool {
+                                itemBool := item.(bool)
+                                v.Field(i).Set(reflect.ValueOf(&itemBool))
+                            }
+                        case reflect.Int:
+                            v.Field(i).SetInt(item.(int64))
+                        case reflect.Int64:
+                            v.Field(i).SetInt(item.(int64))
+                        case reflect.Struct:
+                            v.Field(i).Set(reflect.ValueOf(item))
+                        default:
+                            fmt.Println(t.Field(i).Name, ": ", v.Field(i).Kind(), " - > - ", reflect.ValueOf(item).Kind()) // @todo remove after test out the Get methods
+                    }
+                }
 			}
         }
     }

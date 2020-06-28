@@ -1,9 +1,9 @@
 package domains
 
 type User struct {
-    id          int64
-    email       string
-    phone       string
+    Id          int64       `json:"id"`
+    Email       string      `json:"email"`
+    Phone       string      `json:"phone"`
 }
 
 type CreateUserRequest struct {

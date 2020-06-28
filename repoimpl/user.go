@@ -13,7 +13,7 @@ type User struct {
 
 const (
     getUserByEmail    =   "select * from Users where email = ?";
-    insertUser        =     "insert into Users (email, phone, password) values (?, ?, ?)"
+    insertUser        =   "insert into Users (email, phone, password) values (?, ?, ?)"
 )
 
 func (u *User) CreateNewUser(ctx context.Context, req *domains.CreateUserRequest) (*domains.User, error) {
@@ -24,12 +24,12 @@ func (u *User) CreateNewUser(ctx context.Context, req *domains.CreateUserRequest
     }
     log.Println("running query ", insertUser, req.Email, req.Phone, req.Password)
     res, err := insUser.Exec(req.Email, req.Phone, req.Password)
-    defer u.Conn.DB.Close()
+
     if err != nil {
         log.Println("Insert failed ", err)
     }
-    log.Println("repoimpl:user.go:: Got result ", res)
-    log.Println(res)
+    insertId, _ := res.LastInsertId()
+    log.Println("repoimpl:user.go:: Got id: ", insertId)
     return &domains.User{}, nil
     
 }
@@ -47,13 +47,11 @@ func (u* User) GetUserByEmail(ctx context.Context, email string) (*domains.User,
     }
 
     user := &domains.User{}
-
-    if userRows.Next() {
-        err = utils.StructScan(userRows, user)
-        if err != nil {
-            log.Println("got error while parsing row in StructScan")
-            return nil, err
-        }
+    err = utils.StructScan(userRows, user)
+    if err != nil {
+        log.Println("got error while parsing row in StructScan")
+        return nil, err
     }
+    log.Println("Found User: ", user)
     return user, nil
 }
