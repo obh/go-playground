@@ -29,7 +29,7 @@ func (h *authHandler) authorize(c echo.Context) error {
         return c.String(http.StatusBadRequest, "Bad Request")
    }
    fmt.Printf(ar.Username)
-   fmt.Printf("in authorize handler\n") 
+   fmt.Printf("in authorize handler ", ar) 
 
    resp, err := h.authSvc.Authorize(c.Request().Context(), ar, c.Request())
    if err != nil {

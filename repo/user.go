@@ -7,4 +7,6 @@ import (
 
 type User interface {
     GetUserByEmail(context.Context, string) (*domains.User, error)
+
+    CreateNewUser(context.Context, *domains.CreateUserRequest) (*domains.User, error)
 }
