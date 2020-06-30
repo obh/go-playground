@@ -38,7 +38,7 @@ func (u *User) CreateUser(ctx context.Context, req *domains.CreateUserRequest, h
         log.Println("Cannot Hash password")
         return &domains.CrudResponse{Status: "OK", Code: 500, Message: "Internal servier error"}, nil
    }
-   var now = time.Now().Format("yyyy-MM-dd HH:mm:ss")
+   var now = time.Now().Format("2006-01-02 15:04:05")
    createIntReq := &domains.CreateUserIntRequest{Email: req.Email, Phone: req.Phone, Password: hashedPwd, AddedOn: now};
    user, err := u.UserRepo.CreateNewUser(ctx, createIntReq)
    if err != nil {
