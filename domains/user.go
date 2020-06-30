@@ -16,7 +16,6 @@ type CreateUserIntRequest struct {
     Email       string
     Phone       string
     Password    string
-    Salt        string
     AddedOn     string
 }
 

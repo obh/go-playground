@@ -13,17 +13,17 @@ type User struct {
 
 const (
     getUserByEmail    =   "select * from Users where email = ?";
-    insertUser        =   "insert into Users (email, phone, password) values (?, ?, ?)"
+    insertUser        =   "insert into Users (email, phone, password, addedOn) values (?, ?, ?, ?)"
 )
 
-func (u *User) CreateNewUser(ctx context.Context, req *domains.CreateUserRequest) (*domains.User, error) {
+func (u *User) CreateNewUser(ctx context.Context, req *domains.CreateUserIntRequest) (*domains.User, error) {
     log.Println("repoimpl:user.go:: Creating new user")
     insUser, err := u.Conn.DB.Prepare(insertUser)
     if err != nil {
         log.Println("Failed while preparing insert query", err)
     }
-    log.Println("running query ", insertUser, req.Email, req.Phone, req.Password)
-    res, err := insUser.Exec(req.Email, req.Phone, req.Password)
+    log.Println("running query ", insertUser, req.Email, req.Phone, req.Password, req.AddedOn)
+    res, err := insUser.Exec(req.Email, req.Phone, req.Password, req.AddedOn)
 
     if err != nil {
         log.Println("Insert failed ", err)
