@@ -9,5 +9,6 @@ require (
 	github.com/labstack/echo/v4 v4.1.16
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/spf13/viper v1.7.0
+	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )

@@ -12,6 +12,14 @@ type CreateUserRequest struct {
     Password string     `json:"password" validate:"required,min=6,max=40"`
 }
 
+type CreateUserIntRequest struct {
+    Email       string
+    Phone       string
+    Password    string
+    Salt        string
+    AddedOn     string
+}
+
 type UserRequest struct {
     Id      int64       `json:"id"`
     Email   string      `json:"email"`

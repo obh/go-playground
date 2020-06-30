@@ -2,6 +2,7 @@ package serviceimpl
 
 import (
     "log"
+    "time"
     "net/http"
     "context"
     "regexp"
@@ -31,6 +32,9 @@ func (u *User) CreateUser(ctx context.Context, req *domains.CreateUserRequest, h
         log.Println("Duplicate email found")
         return &domains.CrudResponse{Status: "OK", Code: 401, Message: "Email already exists"}, nil
    }
+   var hashedPwd = utils.HashPassword(req.Password) 
+   var now = time.Now().Format("yyyy-MM-dd HH:mm:ss")
+   createIntReq = &domains.CreateUserIntRequest{Email: req.Email, Phone: req.Phone, Password: hashedPwd, addedOn: now};
    user, err := u.UserRepo.CreateNewUser(ctx, req)
    if err != nil {
         log.Println("serviceimpl:user.go:: Failed when creating new user", err)
