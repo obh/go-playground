@@ -67,3 +67,28 @@ func (u* User) GetUserByEmail(ctx context.Context, email string, httpReq *http.R
     return &domains.CrudResponse{Status: "OK", Code: REQUEST_SUCCESS, Message: "Email found"}, nil
     //log.Println("in serviceimpl of Get User")
 }
+
+func (u *User) ValidateUserLogin(ctx context.Context, loginReq *domains.LoginRequest, httpReq *http.Request) (*domains.CrudResponse, error) {
+    // is this even required, Clean out response and other stuff
+    if loginReq.Email == "" || loginReq.Password == "" {
+        return &domains.CrudResponse{Status: "OK", Code: BAD_REQUEST_CODE, Message: BAD_REQUEST_EMAIL}, nil 
+    }
+    hashedPwd, err := utils.HashPassword(loginReq.Password) 
+    user, err := GetUserByEmail(ctx, loginReq.Email)
+    if err != nil {
+        log.Println("serviceimpl:user.go:: User not found with email ")
+        return &domains.CrudResponse{Status: "OK", Code: NOT_FOUND_CODE, Message: NOT_FOUND_MSG}, nil
+    }
+    if user.Password != hashedPwd {
+        log.Println("serviceimpl:user.go:: User password does not match")
+        return &domains.CrudResponse{Status: "OK", Code: NOT_FOUND_CODE, Message: NOT_FOUND_MSG}, nil
+    }
+    // ok looks user is verified
+    // now we will create the token
+    token, err := utils.CreateToken(user.Email)
+    if err != nil {
+        // Failed when creating token
+
+    }
+
+}

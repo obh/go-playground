@@ -104,3 +104,34 @@ func HashPassword(password string) (string, error) {
     }
     return string(hashedPassword), err
 }
+
+
+func CreateToken(accessSecret string, refreshSecret string, email string) (string, error) {
+    td := &TokenDetails{}
+    td.AtExpires = time.Now().Add(time.Minute * 15).Unix()
+    td.AccessUuid = uuid.NewV4().String()
+    td.RtExpires = time.Now().Add(time.Hour * 24).Unix()
+    td.RefreshUuid = uuid.NewV4().String()
+
+    atClaims := jwt.MapClaims{}
+    atClaims["authorized"] = true
+    atClaims["access_uuid"] = td.AccessUuid
+    atClaims["email"] = email
+    atClaims["expiry"] = td.AtExpires
+    at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+    td.AccessToken, err := at.SignedString([]byte(accessSecret))
+    if err != nil {
+        return "", err
+    }
+
+    rtClaims := jwt.MapClaims{}
+    rtClaims["refresh_uuid"] = td.RefresUuid
+    rtClaims["email"] = email
+    rtClaims["exp"] = td.RtExpires
+    rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
+    td.AccessToken, err := at.SignedString([]byte(refreshSecret))
+    if err != nil {
+        return nil, err
+    }
+    return td, nil
+}

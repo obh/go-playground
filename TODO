@@ -1,0 +1,5 @@
+# Create User interface to add users (done)
+# Create User interface to login 
+# Clean out error codes and response messages
+# Add JWT Token for login and validation
+# Clean out logs
