@@ -21,11 +21,13 @@ func ConfigureUserHandler(e *echo.Echo, userSvc service.User) {
 
 func addUserHandler(e *echo.Echo, handler *userHandler){
     e.POST("/users", handler.createUser)
+    e.POST("/user/auth", handler.authUser)
 }
 
 type userHandler struct {
     userSvc service.User
 }
+
 
 func (h *userHandler) createUser(c echo.Context) error {
     

@@ -13,8 +13,26 @@ type Auth struct {
     AuthRepo repo.Auth
 }
 
-func (a *Auth) Authorize(c context.Context, req *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
-    fmt.Printf("Calling authorize service implementation\n")
+func (a *Auth) Authorize(c context.Context, ar *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
+    if ar.Email == "" || ar.Password == "" {
+        return &domains.CrudResponse{Status: "OK", Code: BAD_REQUEST_CODE, Message:BAD_REQUEST_EMAIL}, nil
+    }
+    hashedPwd, err := utils.HashPassword(loginReq.Password)
+    user, err := GetUserByEmail(ctx, loginReq.Email)
+    if err != nil {
+        log.Println("serviceimpl:user.go:: User not found with email ")
+        return &domains.CrudResponse{Status: "OK", Code: NOT_FOUND_CODE, Message: NOT_FOUND_MSG}, nil
+    }
+    if user.Password != hashedPwd {
+        log.Println("serviceimpl:user.go:: User password does not match")
+        return &domains.CrudResponse{Status: "OK", Code: NOT_FOUND_CODE, Message: NOT_FOUND_MSG},nil
+    }
+    token, err := utils.CreateToken(user.Email)
+    tokens := map[string]string {
+        "access_token" : token.AccessToken,
+        "refresh_token" : token.RefreshToken
+    }
+    log.Println(tokens)
     ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK", }
     return ar, nil
 }

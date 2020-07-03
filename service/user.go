@@ -11,7 +11,7 @@ type User interface {
 
     GetUserByEmail(context.Context, string, *http.Request) (*domains.CrudResponse, error)
 
-    ValidateUserLogin(context.Context, *domains.LoginRequest, *http.Request) (*domains.CrudResponse, error)
+    //ValidateUserLogin(context.Context, *domains.LoginRequest, *http.Request) (*domains.CrudResponse, error)
 
 //    AuthUser(context.Context, *domains.UserAuthRequest, *http.Request) (*domains.ServiceResponse, error)
     
