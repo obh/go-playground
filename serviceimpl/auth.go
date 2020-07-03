@@ -24,3 +24,13 @@ func (a *Auth) Verify(c context.Context) (*domains.AuthorizeResponse, error) {
     ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK",}
     return ar, nil
 }
+
+
+func (a *Auth) AddToken(userId int64, td *TokenDetails) error {
+    at := time.Unix(td.AtExpires, 0) //converting Unix to UTC(to Time object)
+    rt := time.Unix(td.RtExpires, 0)
+    now := time.Now()
+    
+    a.AuthRepo.AddToken(td.AccessUuid, td.RefreshUuid, td.AtExpires, td.RtExpires)
+    log.Println("serviceimpl:auth.go:: Token added successfully")
+}

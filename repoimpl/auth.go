@@ -3,6 +3,7 @@ package repoimpl
 import (
     "fmt"
     "context"
+    "log"
     "github.com/obh/go-playground/domains"
 )
 
@@ -19,4 +20,9 @@ func (a* Auth) Authorize(ctx context.Context, p *domains.AuthorizeRequest) (*dom
     fmt.Printf("Calling internal authorization service")
     authIntResp := &domains.AuthorizeIntResponse{Status: 100, Message: "OK",}
     return authIntResp, nil
+}
+
+
+func (a *Auth) AddToken(accessUuid int64, refreshUuid int64, atExpires int64, rtExpires int64) error {
+    log.Println("repoimpl:auth.go:: Adding Token to memcache")    
 }

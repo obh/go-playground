@@ -88,7 +88,11 @@ func (u *User) ValidateUserLogin(ctx context.Context, loginReq *domains.LoginReq
     token, err := utils.CreateToken(user.Email)
     if err != nil {
         // Failed when creating token
-
     }
-
+    // save token
+    tokens := map[string]string {
+        "access_token" : token.AccessToken,
+        "refresh_token" : token.RefreshToken
+    }
+    return c.JSON(http.StatusOK, tokens)
 }

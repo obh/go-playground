@@ -10,6 +10,7 @@ import (
     "strings"
     "time"
     "golang.org/x/crypto/bcrypt"
+    "github.com/obh-playground/domains"
 )
 
 func StructScan(rows *sql.Rows, model interface{}) error {
@@ -107,7 +108,7 @@ func HashPassword(password string) (string, error) {
 
 
 func CreateToken(accessSecret string, refreshSecret string, email string) (string, error) {
-    td := &TokenDetails{}
+    td := &domains.TokenDetails{}
     td.AtExpires = time.Now().Add(time.Minute * 15).Unix()
     td.AccessUuid = uuid.NewV4().String()
     td.RtExpires = time.Now().Add(time.Hour * 24).Unix()
