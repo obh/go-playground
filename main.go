@@ -52,7 +52,7 @@ func main() {
     }
     
     // Auth service goes here. Start with repo implementation here
-    authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost"} 
+    authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost", Conn: mysqlClient} 
     // inject the rep to service
     authSvc := &serviceimpl.Auth{AuthRepo: authRepo}
     // configure service

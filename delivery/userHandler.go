@@ -11,6 +11,7 @@ import (
 )
 
 // use a single instance of Validate, it caches struct info
+// Todo This should go to a single parent handler
 var validate *validator.Validate
 
 func ConfigureUserHandler(e *echo.Echo, userSvc service.User) {
@@ -21,7 +22,6 @@ func ConfigureUserHandler(e *echo.Echo, userSvc service.User) {
 
 func addUserHandler(e *echo.Echo, handler *userHandler){
     e.POST("/users", handler.createUser)
-    e.POST("/user/auth", handler.authUser)
 }
 
 type userHandler struct {

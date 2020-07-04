@@ -2,14 +2,16 @@ package delivery
 
 import (
     "fmt"
+    "log"
     "net/http"
+    "gopkg.in/go-playground/validator.v9"
     "github.com/labstack/echo/v4"
     
     "github.com/obh/go-playground/service"
     "github.com/obh/go-playground/domains"
 )
 
-var validate *validator.Validate
+//var validate *validator.Validate
 
 func ConfigureAuthHandler(e *echo.Echo, svc service.Auth) {
     fmt.Printf("in ConigureAuthHandler")
@@ -30,7 +32,7 @@ func (h *authHandler) authorize(c echo.Context) error {
    if err := c.Bind(ar); err != nil {
         return c.String(http.StatusBadRequest, "Bad Request")
    }
-   v = validator.New()
+   validate = validator.New()
    err := validate.Struct(ar)
    if err != nil {
         log.Println("delivery::userHandler.go:: Found error in request ", err)

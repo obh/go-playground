@@ -4,7 +4,6 @@ import (
     "context"
     "net/http"
     "github.com/obh/go-playground/domains"
-
 )
 
 // This is the service layer 
@@ -13,5 +12,5 @@ type Auth interface {
 
     Verify(context.Context) (*domains.AuthorizeResponse, error)
 
-    AddToken(int64, *TokenDetails) error 
+    AddToken(int64, *domains.TokenDetails) error 
 }

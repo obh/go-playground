@@ -4,38 +4,42 @@ import(
     "context"
     "net/http"
     "fmt"
+    "log"
     "github.com/obh/go-playground/domains"
     "github.com/obh/go-playground/repo"
-
+    "github.com/obh/go-playground/utils"
 )
 
 type Auth struct {
     AuthRepo repo.Auth
 }
 
-func (a *Auth) Authorize(c context.Context, ar *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
+func (a *Auth) Authorize(ctx context.Context, ar *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
+    // verify email regex as well. Any sanitization required?
     if ar.Email == "" || ar.Password == "" {
-        return &domains.CrudResponse{Status: "OK", Code: BAD_REQUEST_CODE, Message:BAD_REQUEST_EMAIL}, nil
+        return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK", }, nil
     }
-    hashedPwd, err := utils.HashPassword(loginReq.Password)
-    user, err := GetUserByEmail(ctx, loginReq.Email)
+    hashedPwd, err := utils.HashPassword(ar.Password)
+    user, err := a.GetUserByEmail(ctx, ar.Email)
     if err != nil {
         log.Println("serviceimpl:user.go:: User not found with email ")
-        return &domains.CrudResponse{Status: "OK", Code: NOT_FOUND_CODE, Message: NOT_FOUND_MSG}, nil
+        return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK", }, nil
     }
     if user.Password != hashedPwd {
         log.Println("serviceimpl:user.go:: User password does not match")
-        return &domains.CrudResponse{Status: "OK", Code: NOT_FOUND_CODE, Message: NOT_FOUND_MSG},nil
+        return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK",}, nil
     }
     token, err := utils.CreateToken(user.Email)
     tokens := map[string]string {
         "access_token" : token.AccessToken,
-        "refresh_token" : token.RefreshToken
+        "refresh_token" : token.RefreshToken,
     }
     log.Println(tokens)
-    ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK", }
-    return ar, nil
+    resp := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK", }
+    return resp, nil
 }
+
+
 
 func (a *Auth) Verify(c context.Context) (*domains.AuthorizeResponse, error) {
     fmt.Printf("calling verify service implementation")
@@ -44,7 +48,7 @@ func (a *Auth) Verify(c context.Context) (*domains.AuthorizeResponse, error) {
 }
 
 
-func (a *Auth) AddToken(userId int64, td *TokenDetails) error {
+func (a *Auth) AddToken(userId int64, td *domains.TokenDetails) error {
     at := time.Unix(td.AtExpires, 0) //converting Unix to UTC(to Time object)
     rt := time.Unix(td.RtExpires, 0)
     now := time.Now()

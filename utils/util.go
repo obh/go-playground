@@ -10,7 +10,10 @@ import (
     "strings"
     "time"
     "golang.org/x/crypto/bcrypt"
-    "github.com/obh-playground/domains"
+    "github.com/satori/go.uuid"
+    "github.com/dgrijalva/jwt-go"
+
+    "github.com/obh/go-playground/domains"
 )
 
 func StructScan(rows *sql.Rows, model interface{}) error {
@@ -107,8 +110,9 @@ func HashPassword(password string) (string, error) {
 }
 
 
-func CreateToken(accessSecret string, refreshSecret string, email string) (string, error) {
-    td := &domains.TokenDetails{}
+func CreateToken(accessSecret string, refreshSecret string, email string, td *domains.TokenDetails) (error) {
+    // Todo - domains should not be used here. Utils should be free of any internal structure
+    //td := &domains.TokenDetails{}
     td.AtExpires = time.Now().Add(time.Minute * 15).Unix()
     td.AccessUuid = uuid.NewV4().String()
     td.RtExpires = time.Now().Add(time.Hour * 24).Unix()
@@ -120,19 +124,21 @@ func CreateToken(accessSecret string, refreshSecret string, email string) (strin
     atClaims["email"] = email
     atClaims["expiry"] = td.AtExpires
     at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-    td.AccessToken, err := at.SignedString([]byte(accessSecret))
+    atToken, err := at.SignedString([]byte(accessSecret))
+    td.AccessToken = atToken
     if err != nil {
-        return "", err
+        return err
     }
 
     rtClaims := jwt.MapClaims{}
-    rtClaims["refresh_uuid"] = td.RefresUuid
+    rtClaims["refresh_uuid"] = td.RefreshUuid
     rtClaims["email"] = email
     rtClaims["exp"] = td.RtExpires
     rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
-    td.AccessToken, err := at.SignedString([]byte(refreshSecret))
+    tdToken, err := rt.SignedString([]byte(refreshSecret))
+    td.RefreshToken  = tdToken
     if err != nil {
-        return nil, err
+        return err
     }
-    return td, nil
+    return nil
 }
