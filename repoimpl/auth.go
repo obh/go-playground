@@ -20,7 +20,7 @@ type Auth struct {
 }
 
 const (
-    getUserByEmail      =       "select * from Users where email = ?";
+    getUser         =       "select * from Users where email = ?";
 )
 
 func (a* Auth) Authorize(ctx context.Context, p *domains.AuthorizeRequest) (*domains.AuthorizeIntResponse, error) {
@@ -31,13 +31,14 @@ func (a* Auth) Authorize(ctx context.Context, p *domains.AuthorizeRequest) (*dom
 }
 
 
-func (a *Auth) AddToken(accessUuid int64, refreshUuid int64, atExpires int64, rtExpires int64) error {
+func (a *Auth) AddToken(accessUuid string, refreshUuid string, atExpires int64, rtExpires int64) error {
     log.Println("repoimpl:auth.go:: Adding Token to memcache")    
+    return nil
 }
 
 func (a *Auth) GetUser(ctx context.Context, email string) (*domains.User, error) {
     log.Println("Getting user by email: ", email)
-    userRows, err := a.Conn.DB.QueryContext(ctx, getUserByEmail, email)
+    userRows, err := a.Conn.DB.QueryContext(ctx, getUser, email)
     if err != nil {
         log.Println("User Query failed ", err)
         return nil, err

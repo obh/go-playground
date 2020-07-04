@@ -13,6 +13,7 @@ type Config struct {
     Stage       string      `yaml:"stage"`
     LogConfig   LogConfig   `yaml:"logconfig"`
     DbConfig    DbConfig    `yaml:"dbconfig"`
+    AuthConfig  AuthConfig  `yaml:"authconfig"`
 }
 
 type LogConfig struct {
@@ -27,6 +28,11 @@ type DbConfig struct {
     Port            string      `yaml:"port"`
     Name            string      `yaml:"name"`
     MaxConnections  int         `yaml:"maxConnections"`
+}
+
+type AuthConfig struct {
+    AccessSecret    string      `yaml:"accessSecret"`
+    RefreshSecret   string      `yaml:"refreshSecret"`
 }
 
 func LoadConfig() *Config {

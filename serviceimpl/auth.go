@@ -5,13 +5,16 @@ import(
     "net/http"
     "fmt"
     "log"
+    "time"
     "github.com/obh/go-playground/domains"
     "github.com/obh/go-playground/repo"
     "github.com/obh/go-playground/utils"
+    "github.com/obh/go-playground/config"
 )
 
 type Auth struct {
     AuthRepo repo.Auth
+    Secrets  config.AuthConfig
 }
 
 func (a *Auth) Authorize(ctx context.Context, ar *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
@@ -20,7 +23,7 @@ func (a *Auth) Authorize(ctx context.Context, ar *domains.AuthorizeRequest, http
         return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK", }, nil
     }
     hashedPwd, err := utils.HashPassword(ar.Password)
-    user, err := a.GetUserByEmail(ctx, ar.Email)
+    user, err := a.AuthRepo.GetUser(ctx, ar.Email)
     if err != nil {
         log.Println("serviceimpl:user.go:: User not found with email ")
         return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK", }, nil
@@ -29,7 +32,8 @@ func (a *Auth) Authorize(ctx context.Context, ar *domains.AuthorizeRequest, http
         log.Println("serviceimpl:user.go:: User password does not match")
         return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK",}, nil
     }
-    token, err := utils.CreateToken(user.Email)
+    token := new(domains.TokenDetails)
+    err = utils.CreateToken("access_secret", "refresh_secret", user.Email, token)
     tokens := map[string]string {
         "access_token" : token.AccessToken,
         "refresh_token" : token.RefreshToken,
@@ -51,8 +55,9 @@ func (a *Auth) Verify(c context.Context) (*domains.AuthorizeResponse, error) {
 func (a *Auth) AddToken(userId int64, td *domains.TokenDetails) error {
     at := time.Unix(td.AtExpires, 0) //converting Unix to UTC(to Time object)
     rt := time.Unix(td.RtExpires, 0)
-    now := time.Now()
-    
+    //now := time.Now()
+    log.Println("adding token. At time: %d  Rt time: %d", at, rt) 
     a.AuthRepo.AddToken(td.AccessUuid, td.RefreshUuid, td.AtExpires, td.RtExpires)
     log.Println("serviceimpl:auth.go:: Token added successfully")
+    return nil
 }

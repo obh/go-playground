@@ -12,3 +12,7 @@ dbconfig:
   port: 3306
   name: go_playground
   maxConnections: 10
+
+authconfig:
+    accessSecret: Yhy123hawfjlktasdfb213a@!
+    refreshSecret: vgadstfhTrerOujdfTradf!ryhPOwl

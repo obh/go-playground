@@ -3,3 +3,7 @@ export CONFIG=/Users/rohit/go/src/obh-crud/config/SAMPLE_CONFIG
 ## dependencies
 go get github.com/labstack/echo/v4
 
+curl -X POST http://localhost:1323/users -H 'Content-Type: application/json' -d '{"email" : "rohit@gocashfree.com", "phone":"9908734803", "password" : "pswd123" }'
+
+
+
