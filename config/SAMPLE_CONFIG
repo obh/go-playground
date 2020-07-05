@@ -13,6 +13,9 @@ dbconfig:
   name: go_playground
   maxConnections: 10
 
+cacheconfig:
+  host: "localhost:11211"
+
 authconfig:
     accessSecret: Yhy123hawfjlktasdfb213a@!
     refreshSecret: vgadstfhTrerOujdfTradf!ryhPOwl

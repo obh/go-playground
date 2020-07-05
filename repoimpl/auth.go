@@ -1,9 +1,10 @@
 package repoimpl
 
 import (
-    "fmt"
     "context"
     "log"
+    "github.com/bradfitz/gomemcache/memcache"
+
     "github.com/obh/go-playground/domains"
     "github.com/obh/go-playground/utils"
 )
@@ -17,22 +18,31 @@ type Auth struct {
     Client *Client
     Conn    MySqlClient
     AuthSvcBase string
+    Cache   *Cache
 }
 
 const (
     getUser         =       "select * from Users where email = ?";
 )
 
-func (a* Auth) Authorize(ctx context.Context, p *domains.AuthorizeRequest) (*domains.AuthorizeIntResponse, error) {
-    // return the Authroize response from here
-    fmt.Printf("Calling internal authorization service")
-    authIntResp := &domains.AuthorizeIntResponse{Status: 100, Message: "OK",}
-    return authIntResp, nil
-}
 
-
-func (a *Auth) AddToken(accessUuid string, refreshUuid string, atExpires int64, rtExpires int64) error {
+func (a *Auth) AddToken(td *domains.TokenDetails, email string) error {
     log.Println("repoimpl:auth.go:: Adding Token to memcache")    
+  
+    v := []byte(email)
+    it1 := &memcache.Item{Key: td.AccessUuid, Value: v, Expiration: int32(td.AtExpires)}
+    err := a.Cache.Client.Set(it1)
+    if err != nil {
+        log.Println("repimpl:auth.go:: Error when inserting in cache", err)
+        return err
+    }
+
+    it2 := &memcache.Item{Key: td.RefreshUuid, Value: v, Expiration: int32(td.RtExpires)}
+    err = a.Cache.Client.Set(it2)
+    if err != nil {
+        log.Println("repimpl:auth.go:: Error when inserting in cache", err)
+        return err
+    }
     return nil
 }
 

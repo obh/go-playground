@@ -13,6 +13,7 @@ type Config struct {
     Stage       string      `yaml:"stage"`
     LogConfig   LogConfig   `yaml:"logconfig"`
     DbConfig    DbConfig    `yaml:"dbconfig"`
+    CacheConfig CacheConfig `yaml:"cacheconfig"`
     AuthConfig  AuthConfig  `yaml:"authconfig"`
 }
 
@@ -28,6 +29,10 @@ type DbConfig struct {
     Port            string      `yaml:"port"`
     Name            string      `yaml:"name"`
     MaxConnections  int         `yaml:"maxConnections"`
+}
+
+type CacheConfig struct {
+    Host        string      `yaml:"host"`
 }
 
 type AuthConfig struct {

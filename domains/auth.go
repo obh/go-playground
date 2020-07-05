@@ -8,9 +8,11 @@ type AuthorizeRequest struct {
 }
 
 // This is response from internal service
-type AuthorizeIntResponse struct {
-    Status int
-    Message string
+type AuthorizeResponse struct {
+    Status              int              `json:"status"`
+    Message             string          `json:"message"`
+    AccessToken         string      `json:"accessToken"`
+    RefreshToken        string     `json:"refreshToken"`
 }
 
 // This is service request
@@ -26,12 +28,6 @@ type CrudResponse struct {
     // Should add data as well
 }
 
-type AuthorizeResponse struct {
-    Status  string
-    Code    int
-    Message string
-    // Should add data as well
-}
 
 type TokenDetails struct {
     AccessToken     string

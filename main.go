@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    //"log"
+    "log"
     "net/http"
     "strings"
 
@@ -13,6 +13,8 @@ import (
 
     //echo
     "github.com/labstack/echo/v4"
+    "github.com/bradfitz/gomemcache/memcache"
+
     //"github.com/labstack/echo/v4/middleware"
 )
 
@@ -46,13 +48,19 @@ func main() {
 
     // db client
     mysqlClient, err := repoimpl.InitDb(config.DbConfig)
-
     if err != nil {
         fmt.Println("MySql connection failed ", err)
     }
+
+    // cache client
+    cache, err := repoimpl.InitCache(config.CacheConfig)
+    if err != nil {
+        log.Println("Cache connection failed ", err)
+    }
+    cache.Client.Set(&memcache.Item{Key: "foo", Value: []byte("my value")})
     
     // Auth service goes here. Start with repo implementation here
-    authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost", Conn: mysqlClient} 
+    authRepo := &repoimpl.Auth{Client: client, AuthSvcBase: "localhost", Conn: mysqlClient, Cache: cache} 
     
     // inject the rep to service
     authSvc := &serviceimpl.Auth{AuthRepo: authRepo, Secrets: config.AuthConfig}

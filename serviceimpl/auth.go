@@ -5,11 +5,11 @@ import(
     "net/http"
     "fmt"
     "log"
-    "time"
     "github.com/obh/go-playground/domains"
     "github.com/obh/go-playground/repo"
     "github.com/obh/go-playground/utils"
     "github.com/obh/go-playground/config"
+    "golang.org/x/crypto/bcrypt"
 )
 
 type Auth struct {
@@ -20,44 +20,34 @@ type Auth struct {
 func (a *Auth) Authorize(ctx context.Context, ar *domains.AuthorizeRequest, httpReq *http.Request) (*domains.AuthorizeResponse, error) {
     // verify email regex as well. Any sanitization required?
     if ar.Email == "" || ar.Password == "" {
-        return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK", }, nil
+        return &domains.AuthorizeResponse{Status: 400, Message: "Request not incorrect", }, nil
     }
-    hashedPwd, err := utils.HashPassword(ar.Password)
     user, err := a.AuthRepo.GetUser(ctx, ar.Email)
     if err != nil {
         log.Println("serviceimpl:user.go:: User not found with email ")
-        return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK", }, nil
+        return &domains.AuthorizeResponse{Status: 400,  Message: "Incorrect login credentials", }, nil
     }
-    if user.Password != hashedPwd {
+    ePwd := [] byte(user.Password)
+    attempt := [] byte(ar.Password)
+    err = bcrypt.CompareHashAndPassword(ePwd, attempt)
+    if err != nil{
         log.Println("serviceimpl:user.go:: User password does not match")
-        return &domains.AuthorizeResponse{Status: "SUCCESS", Code: 400, Message: "OK",}, nil
+        return &domains.AuthorizeResponse{Status: 400, Message: "Incorrect login credentials",}, nil
     }
+    // Creating and saving token in Cache
     token := new(domains.TokenDetails)
-    err = utils.CreateToken("access_secret", "refresh_secret", user.Email, token)
-    tokens := map[string]string {
-        "access_token" : token.AccessToken,
-        "refresh_token" : token.RefreshToken,
-    }
-    log.Println(tokens)
-    resp := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK", }
+    err = utils.CreateToken(a.Secrets.AccessSecret, a.Secrets.RefreshSecret, user.Email, token)
+    err = a.AuthRepo.AddToken(token, user.Email)
+
+    resp := &domains.AuthorizeResponse{Status: 100, Message: "OK", AccessToken: token.AccessToken, RefreshToken: token.RefreshToken }
     return resp, nil
 }
 
 
-
 func (a *Auth) Verify(c context.Context) (*domains.AuthorizeResponse, error) {
     fmt.Printf("calling verify service implementation")
-    ar := &domains.AuthorizeResponse{Status: "SUCCESS", Code: 100, Message: "OK",}
+    ar := &domains.AuthorizeResponse{Status: 100, Message: "OK",}
     return ar, nil
 }
 
 
-func (a *Auth) AddToken(userId int64, td *domains.TokenDetails) error {
-    at := time.Unix(td.AtExpires, 0) //converting Unix to UTC(to Time object)
-    rt := time.Unix(td.RtExpires, 0)
-    //now := time.Now()
-    log.Println("adding token. At time: %d  Rt time: %d", at, rt) 
-    a.AuthRepo.AddToken(td.AccessUuid, td.RefreshUuid, td.AtExpires, td.RtExpires)
-    log.Println("serviceimpl:auth.go:: Token added successfully")
-    return nil
-}

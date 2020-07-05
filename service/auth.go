@@ -12,5 +12,4 @@ type Auth interface {
 
     Verify(context.Context) (*domains.AuthorizeResponse, error)
 
-    AddToken(int64, *domains.TokenDetails) error 
 }
