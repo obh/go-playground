@@ -118,6 +118,7 @@ func CreateToken(accessSecret string, refreshSecret string, email string, td *do
     td.RtExpires = time.Now().Add(time.Hour * 24).Unix()
     td.RefreshUuid = uuid.NewV4().String()
 
+    // These keys should not be in utils, but passed through the service
     atClaims := jwt.MapClaims{}
     atClaims["authorized"] = true
     atClaims["access_uuid"] = td.AccessUuid

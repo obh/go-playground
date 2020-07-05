@@ -21,9 +21,8 @@ type AuthorizeHttpRequest struct {
     Password string
 }
 
-type CrudResponse struct {
-    Status  string
-    Code    int
+type ValidateResponse struct {
+    Status  int
     Message string
     // Should add data as well
 }
@@ -36,4 +35,10 @@ type TokenDetails struct {
     RefreshUuid     string
     AtExpires       int64
     RtExpires       int64
+    Email           string      // Todo -> change this to UserId
+}
+
+type AccessDetails struct {
+    AccessUuid      string
+    Email           string
 }
