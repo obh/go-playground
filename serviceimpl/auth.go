@@ -108,13 +108,17 @@ func (a *Auth) VerifyToken(req *http.Request) (*domains.AccessDetails, error) {
     }
 }
 
-func ExtractToken(token interface{})  {
+func (a *Auth) ExtractToken(token interface{})  {
     claims := token.Claims.(jwt.MapClaims)
-    accessUuid, ok := claims["access_token"].(string)
+    accessUuid, ok := claims["access_uuid"].(string)
     if !ok {
         return "", err
     }
     userEmail, err := claims["email"].(string)
     &domains.AccessDetails{AccessUuid: accessUuid, Email: userEmail}, nil
-
+   // Get access_uuid from cache
+   it, err := a.GetToken(accessUuid)
+   if err != nil {
+        log.Println("serviceimpl:auth.go:: Token not in cache", err)
+   }
 } 
