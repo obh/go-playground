@@ -12,6 +12,6 @@ type Auth interface {
 
     ValidateToken(context.Context, *http.Request) (*domains.ValidateResponse)
 
-    Verify(context.Context) (*domains.AuthorizeResponse, error)
+    Verify(context.Context, *http.Request) (*domains.AuthorizeResponse, error)
 
 }

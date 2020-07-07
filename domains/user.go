@@ -26,16 +26,10 @@ type UserRequest struct {
     Phone   string      `json:"phone"`
 }
 
-type UserAuthRequest struct {
-    username       string
-    password       string
-}
-
-
-type UserAuthResponse struct {
-    username    string
-    status      int
-    token       string
+type CrudResponse struct {
+    Status      string
+    Code        int32
+    Message     string
 }
 
 type UserCreateRequest struct {

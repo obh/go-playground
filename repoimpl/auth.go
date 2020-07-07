@@ -31,7 +31,7 @@ func (a *Auth) AddToken(td *domains.TokenDetails, email string) error {
   
     v := []byte(email)
     it1 := &memcache.Item{Key: td.AccessUuid, Value: v, Expiration: int32(td.AtExpires)}
-    err := a.ache.Client.Set(it1)
+    err := a.Cache.Client.Set(it1)
     if err != nil {
         log.Println("repimpl:auth.go:: Error when inserting in cache", err)
         return err
