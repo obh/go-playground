@@ -40,7 +40,7 @@ func (h *authHandler) validate(c echo.Context) error {
 		log.Println("deliver::authHandler.go:: Found error in request ", err)
 		return c.String(http.StatusBadRequest, "Bad Request")
 	}
-	r, err := h.authSvc.ValidateToken(c.Request().Context(), tr)
+	r, err := h.authSvc.Verify(c.Request().Context(), tr)
 	return c.JSON(http.StatusOK, r)
 }
 
@@ -55,6 +55,7 @@ func (h *authHandler) logout(c echo.Context) error {
 		log.Println("delivery::authHandler.go:: Found error in request ", err)
 		return c.String(http.StatusBadRequest, "Bad Request")
 	}
+	return c.JSON(http.StatusOK, "ok")
 }
 
 func (h *authHandler) authorize(c echo.Context) error {

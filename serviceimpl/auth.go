@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
+	//"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/obh/go-playground/config"
@@ -51,32 +51,7 @@ func (a *Auth) Authorize(ctx context.Context, ar *domains.AuthorizeRequest, http
 	return resp, nil
 }
 
-// We assume that the token is in the header of the HTTP request
-func (a *Auth) ValidateToken(ctx context.Context, req *domains.TokenRequest) *domains.ValidateResponse {
-	auth := req.AccessToken
-	if auth == "" {
-		log.Println("serviceimpl:auth.go:: Missing Authorization header")
-		return &domains.ValidateResponse{Status: 400, Message: "Failed to verify token"}
-	}
-	t := auth
-	token, err := jwt.Parse(t, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(a.Secrets.AccessSecret), nil
-	})
-	if err != nil {
-		log.Println("serviceimpl:auth.go:: Failed to verify token")
-		return &domains.ValidateResponse{Status: 400, Message: "Failed to verify token"}
-	}
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
-		log.Println("serviceimpl:auth.go:: Failed to verify token")
-		return &domains.ValidateResponse{Status: 400, Message: "Failed to verify token"}
-	}
-	return &domains.ValidateResponse{Status: 400, Message: "Failed to verify token"}
-}
-
-func (a *Auth) Verify(c context.Context, req *http.Request) (*domains.AuthorizeResponse, error) {
+func (a *Auth) Verify(c context.Context, req *domains.TokenRequest) (*domains.AuthorizeResponse, error) {
 	fmt.Printf("calling verify service implementation")
 	ar := &domains.AuthorizeResponse{Status: 100, Message: "OK"}
 	return ar, nil
@@ -86,17 +61,13 @@ func (a *Auth) Verify(c context.Context, req *http.Request) (*domains.AuthorizeR
 //
 //}
 
-func (a *Auth) VerifyToken(req *http.Request) (*domains.ValidateResponse, error) {
-	bearerToken := req.Header.Get("Authorization")
+func (a *Auth) VerifyToken(req *domains.TokenRequest) (*domains.ValidateResponse, error) {
+	bearerToken := req.AccessToken
 	if bearerToken == "" {
 		log.Println("serviceimpl:auth.go:: Missing Authorization header")
 		return nil, nil
 	}
-	strArr := strings.Split(bearerToken, " ")
-	if len(strArr) != 2 {
-		log.Println("serviceimpl:auth.go:: Incorrect Authorization header")
-	}
-	t := strArr[1]
+	t := bearerToken
 	token, err := jwt.Parse(t, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -111,10 +82,11 @@ func (a *Auth) VerifyToken(req *http.Request) (*domains.ValidateResponse, error)
 		log.Println("serviceimpl:auth.go:: Failed to verify token")
 		return &domains.ValidateResponse{Status: 400, Message: "Failed to verify token"}, nil
 	}
+	a.ExtractToken(token)
 	return &domains.ValidateResponse{Status: 400, Message: "Failed to verify token"}, nil
 }
 
-func (a *Auth) ExtractToken(token jwt.Token) {
+func (a *Auth) ExtractToken(token *jwt.Token) {
 	claims := token.Claims.(jwt.MapClaims)
 	accessUuid, ok := claims["access_uuid"].(string)
 	if !ok {
