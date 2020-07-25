@@ -13,5 +13,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.7.0
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
+	golang.org/x/tools/gopls v0.4.3 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )

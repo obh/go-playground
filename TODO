@@ -3,3 +3,6 @@
 # Clean out error codes and response messages
 # Add JWT Token for login and validation
 # Clean out logs
+# Add functionality to validate token
+# Add functionality to logout (unset tokens)
+#
